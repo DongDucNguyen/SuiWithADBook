@@ -45,8 +45,8 @@ export class EditProfileModal {
     }
 
     #render() {
-        // Nếu đã có overlay rồi (do instance cũ) → không tạo nữa
-        const existingOverlay = document.querySelector('.modal-overlay');
+        // Tìm overlay riêng của EditProfileModal (dùng class riêng để tránh conflict)
+        const existingOverlay = document.querySelector('.modal-overlay-edit-profile');
         if (existingOverlay) {
             this.#overlay = existingOverlay;
             this.#form = this.#overlay.querySelector('#edit-profile-form');
@@ -54,7 +54,7 @@ export class EditProfileModal {
         }
 
         this.#overlay = document.createElement('div');
-        this.#overlay.className = 'modal-overlay';
+        this.#overlay.className = 'modal-overlay modal-overlay-edit-profile'; // Class riêng
 
         this.#overlay.innerHTML = `
             <div class="modal-content">
@@ -128,10 +128,12 @@ export class EditProfileModal {
 
         // Lưu dữ liệu
         const saveBtn = this.#overlay.querySelector('.js-save-modal');
-        saveBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.#saveData();
-        });
+        if (saveBtn) {
+            saveBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.#saveData();
+            });
+        }
     }
 
     #close() {
@@ -154,7 +156,7 @@ export class EditProfileModal {
         this.#close();
     }
 
-    
+
     #escapeHtml(text) {
         if (typeof text !== 'string') return '';
         const div = document.createElement('div');
@@ -165,7 +167,7 @@ export class EditProfileModal {
 
 const currentUser = JSON.parse(localStorage.getItem("userLogin"));
 if (currentUser) {
-    new EditProfileModal(currentUser); 
+    new EditProfileModal(currentUser);
 }
 
 // khi có API

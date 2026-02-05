@@ -6,7 +6,8 @@ export class UserFavoriteSection {
     constructor(data) {
         this.#data = data;
         this.#container = document.querySelector('.js-favorite-container');
-        this.#token = token
+        // FAKE TOKEN cho demo mode (không cần auth thật)
+        this.#token = 'fake_demo_token_12345';
         if (this.#container) this.init();
     }
 
@@ -64,12 +65,12 @@ export class UserFavoriteSection {
     // [NEW] Xử lý sự kiện click "Tất cả"
     #addEventListeners() {
         const viewAllBtn = this.#container.querySelector('.all-favorites');
-        
+
         if (viewAllBtn) {
             viewAllBtn.addEventListener('click', () => {
                 // 1. Lưu tiêu đề mong muốn cho trang Listing Book
                 localStorage.setItem('selectedGenre', "YÊU THÍCH");
-                
+
                 // 2. Điều hướng tới trang danh sách sách
                 window.location.href = "./Details/Listing-Book-Page.html";
             });

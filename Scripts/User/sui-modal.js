@@ -3,7 +3,7 @@
 export class SuiAccountModal {
     #overlay;
     #contentContainer;
-    
+
     constructor() {
         this.#renderBase();
         this.#attachCloseEvents();
@@ -27,8 +27,10 @@ export class SuiAccountModal {
 
     // 2. Hàm hiển thị Modal
     show() {
+        console.log("SuiAccountModal.show() được gọi"); // DEBUG
         this.#overlay.classList.add('active');
         this.#checkAndRenderContent();
+        console.log("Modal overlay:", this.#overlay); // DEBUG
     }
 
     // 3. Đóng Modal
@@ -56,49 +58,69 @@ export class SuiAccountModal {
         }
     }
 
-    // --- VIEW 1: CHƯA CÓ TÀI KHOẢN (Hiện khung đăng ký/kết nối) ---
+    // --- VIEW 1: CHƯA CÓ TÀI KHOẢN (Hiện form đăng ký FAKE) ---
     #renderConnectView() {
         this.#contentContainer.innerHTML = `
             <div class="sui-connect-container">
                 <img src="https://assets.coingecko.com/coins/images/26375/large/sui_asset.jpeg" alt="Sui Logo" class="sui-logo-large">
                 
                 <p class="sui-desc">
-                    Kết nối ví SUI để nhận thưởng khi trả lời câu hỏi và donate cho tác giả.<br>
-                    Hệ thống hỗ trợ ví <b>Sui Wallet</b>.
+                    Đăng ký hoặc kết nối ví SUI để nhận thưởng khi hoàn thành quiz.<br>
+                    <small style="color:#888">* Demo mode - Nhập thông tin bất kỳ</small>
                 </p>
 
-                <button class="btn btn-sui-connect js-connect-action">
-                    <i class="fa-solid fa-link"></i> Đăng ký / Kết nối Ví
-                </button>
+                <div class="sui-register-form">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display:block; margin-bottom:5px; font-weight:600;">Tên hiển thị</label>
+                        <input type="text" class="form-input js-sui-name" placeholder="VD: Nguyen Van A" style="width:100%; box-sizing:border-box;">
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display:block; margin-bottom:5px; font-weight:600;">Địa chỉ ví SUI</label>
+                        <input type="text" class="form-input js-sui-address" placeholder="VD: 0x1234...abcd" style="width:100%; box-sizing:border-box;">
+                        <small style="color:#888; font-size:12px;">Nhập địa chỉ ví hoặc để trống để tự tạo</small>
+                    </div>
+
+                    <button class="btn btn-sui-connect js-connect-action" style="width:100%;">
+                        <i class="fa-solid fa-wallet"></i> Kết nối ví
+                    </button>
+                </div>
             </div>
         `;
 
         // Gán sự kiện click nút kết nối
         this.#contentContainer.querySelector('.js-connect-action').addEventListener('click', () => {
-            this.#handleConnect();
+            this.#handleFakeConnect();
         });
     }
 
     // --- VIEW 2: ĐÃ CÓ TÀI KHOẢN (Hiện thông tin) ---
-    async #renderProfileView(address) {
-        // Giả lập lấy số dư (hoặc gọi API getBalance thực tế nếu đã tích hợp file sui-wallet.js)
-        // Ở đây mình lấy tạm từ localStorage hoặc hiện 0 SUI nếu chưa có
-        let balance = "0.00"; 
-        
+    #renderProfileView(address) {
+        // Lấy thông tin từ localStorage (FAKE - không cần backend)
+        const displayName = localStorage.getItem('sui_display_name') || 'Anonymous User';
+        const balance = parseFloat(localStorage.getItem('sui_balance') || '0').toFixed(2);
+
         // Render UI
         this.#contentContainer.innerHTML = `
             <div class="sui-profile-container">
                 <div class="sui-info-card">
-                    <div>
-                        <div class="sui-label">Địa chỉ ví</div>
-                        <div class="sui-value">
-                            ${address}
-                            <i class="fa-regular fa-copy" style="cursor:pointer" title="Sao chép"></i>
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <div class="sui-label">Chủ tài khoản</div>
+                        <div style="font-size: 24px; font-weight: 700; color: #333;">
+                            ${displayName}
                         </div>
                     </div>
 
                     <div>
-                        <div class="sui-label">Số dư hiện tại</div>
+                        <div class="sui-label">Địa chỉ ví</div>
+                        <div class="sui-value">
+                            ${address.substring(0, 20)}...${address.substring(address.length - 10)}
+                            <i class="fa-regular fa-copy js-copy-btn" style="cursor:pointer" title="Sao chép"></i>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="sui-label">Số dư hiện tại (từ Quiz)</div>
                         <div class="sui-balance-highlight">${balance} SUI</div>
                     </div>
                 </div>
@@ -115,9 +137,55 @@ export class SuiAccountModal {
         this.#contentContainer.querySelector('.js-disconnect').addEventListener('click', () => {
             this.#handleDisconnect();
         });
+
+        // Sự kiện copy địa chỉ
+        const copyBtn = this.#contentContainer.querySelector('.js-copy-btn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(address);
+                copyBtn.className = 'fa-solid fa-check';
+                setTimeout(() => {
+                    copyBtn.className = 'fa-regular fa-copy';
+                }, 2000);
+            });
+        }
     }
 
     // --- LOGIC XỬ LÝ (JS THUẦN) ---
+
+    // FAKE Connect - Xử lý form đăng ký giả lập
+    #handleFakeConnect() {
+        const nameInput = this.#contentContainer.querySelector('.js-sui-name');
+        const addressInput = this.#contentContainer.querySelector('.js-sui-address');
+
+        const displayName = nameInput.value.trim() || 'Anonymous User';
+        let walletAddress = addressInput.value.trim();
+
+        // Nếu không nhập địa chỉ, tự tạo địa chỉ fake
+        if (!walletAddress) {
+            walletAddress = this.#generateFakeAddress();
+        }
+
+        // Lưu vào LocalStorage
+        localStorage.setItem('sui_address', walletAddress);
+        localStorage.setItem('sui_display_name', displayName);
+
+        // Thông báo thành công
+        alert(`Kết nối thành công!\n\nTên: ${displayName}\nVí: ${walletAddress.substring(0, 20)}...`);
+
+        // Render lại giao diện sang View Profile
+        this.#renderProfileView(walletAddress);
+    }
+
+    // Tạo địa chỉ ví fake
+    #generateFakeAddress() {
+        const chars = '0123456789abcdef';
+        let address = '0x';
+        for (let i = 0; i < 64; i++) {
+            address += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return address;
+    }
 
     async #handleConnect() {
         // Kiểm tra xem trình duyệt có cài extension Sui Wallet chưa
@@ -140,13 +208,13 @@ export class SuiAccountModal {
             const accounts = await provider.getAccounts();
             if (accounts && accounts.length > 0) {
                 const address = accounts[0];
-                
+
                 // Lưu vào LocalStorage (giả lập việc "Đăng ký" thành công)
                 localStorage.setItem('sui_address', address);
 
                 // Thông báo thành công
                 alert("Đăng ký & Kết nối ví SUI thành công!");
-                
+
                 // Render lại giao diện sang View Profile
                 this.#renderProfileView(address);
             }
@@ -158,8 +226,9 @@ export class SuiAccountModal {
 
     #handleDisconnect() {
         // Xử lý xác nhận
-        if(confirm("Bạn có chắc muốn ngắt kết nối ví SUI khỏi tài khoản này?")) {
+        if (confirm("Bạn có chắc muốn ngắt kết nối ví SUI khỏi tài khoản này?")) {
             localStorage.removeItem('sui_address');
+            localStorage.removeItem('sui_display_name');
             this.#renderConnectView(); // Quay về giao diện đăng ký
         }
     }

@@ -9,7 +9,7 @@ export class QuizApp {
         this.#questions = questions;
         this.#currentIndex = 0;
         this.#score = 0;
-        
+
         // DOM element hiển thị quiz
         this.#quizContainer = document.querySelector('.js-quiz-card');
 
@@ -28,7 +28,7 @@ export class QuizApp {
     // Private method: Render câu hỏi hiện tại
     #renderQuestion() {
         const currentData = this.#questions[this.#currentIndex];
-        
+
         // Template HTML cho câu hỏi
         this.#quizContainer.innerHTML = `
             <div class="question-count">Câu hỏi ${this.#currentIndex + 1} / ${this.#questions.length}</div>
@@ -50,14 +50,14 @@ export class QuizApp {
     // Private method: Xử lý sự kiện click chọn đáp án
     #addAnswerListeners(correctIndex) {
         const buttons = this.#quizContainer.querySelectorAll('.js-ans-btn');
-        
+
         buttons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 // Vô hiệu hóa tất cả nút để không chọn lại
                 this.#disableButtons();
 
                 const selectedIndex = parseInt(e.target.dataset.index);
-                
+
                 // Logic kiểm tra đúng sai
                 if (selectedIndex === correctIndex) {
                     e.target.classList.add('correct');
@@ -84,11 +84,11 @@ export class QuizApp {
     #showNextButton() {
         const controls = this.#quizContainer.querySelector('.quiz-controls');
         const isLastQuestion = this.#currentIndex === this.#questions.length - 1;
-        
+
         const btnText = isLastQuestion ? "XEM KẾT QUẢ" : "CÂU TIẾP THEO";
-        
+
         controls.innerHTML = `<button class="next-btn js-next-btn">${btnText} &rarr;</button>`;
-        
+
         controls.querySelector('.js-next-btn').addEventListener('click', () => {
             if (isLastQuestion) {
                 this.#renderResult();
@@ -103,14 +103,14 @@ export class QuizApp {
     #renderResult() {
         // Tính phần trăm điểm
         const percentage = (this.#score / this.#questions.length) * 100;
-        
+
         let message = "";
         let suiButtonHtml = ""; // Mặc định không có nút nhận quà
 
         // Logic thông báo và Nút SUI
         if (percentage === 100) {
             message = "TUYỆT VỜI! BẠN LÀ MỘT THIÊN TÀI!";
-            
+
             // CHỈ HIỆN KHI ĐÚNG 100%
             suiButtonHtml = `
                 <div style="margin-top: 30px;">
@@ -148,21 +148,71 @@ export class QuizApp {
         }
     }
 
-    // Xử lý khi bấm nhận thưởng
-    #handleSuiReward() {
-        // Tại đây bạn có thể gọi API blockchain hoặc backend để chuyển token
-        // Hiện tại ta giả lập bằng alert
-        alert("🎉 Xác nhận! Hệ thống đang gửi 100 SUI vào ví của bạn.");
-        
-        // Thay đổi trạng thái nút sau khi nhận
+    // Xử lý khi bấm nhận thưởng - FAKE HOÀN TOÀN (không cần backend)
+    async #handleSuiReward() {
         const btn = this.#quizContainer.querySelector('.js-sui-btn');
-        if (btn) {
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> ĐÃ NHẬN THƯỞNG';
-            btn.style.background = "#888";
-            btn.style.boxShadow = "none";
-            btn.style.cursor = "default";
-            btn.style.animation = "none";
+        if (!btn) return;
+
+        // Lấy thông tin từ localStorage
+        const userAddress = localStorage.getItem('sui_address');
+        const displayName = localStorage.getItem('sui_display_name') || 'Anonymous';
+        const bookName = localStorage.getItem('bookForQuiz') || 'Unknown';
+
+        if (!userAddress) {
+            alert("⚠️ Bạn chưa kết nối ví SUI!\nVui lòng vào Cài đặt → Tài khoản SUI để kết nối ví trước.");
+            return;
         }
+
+        // Hiển thị trạng thái đang xử lý
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+
+        // Giả lập delay network (1-2 giây)
+        await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+
+        // ========== FAKE TRANSACTION ==========
+        const rewardAmount = 1; // 1 SUI
+        const fakeTxHash = this.#generateFakeTxHash();
+
+        // Lấy số dư hiện tại từ localStorage và cộng thêm
+        let currentBalance = parseFloat(localStorage.getItem('sui_balance') || '0');
+        currentBalance += rewardAmount;
+        localStorage.setItem('sui_balance', currentBalance.toString());
+
+        // Lưu lịch sử transaction
+        const history = JSON.parse(localStorage.getItem('sui_tx_history') || '[]');
+        history.push({
+            txHash: fakeTxHash,
+            amount: rewardAmount,
+            bookName: bookName,
+            timestamp: new Date().toISOString()
+        });
+        localStorage.setItem('sui_tx_history', JSON.stringify(history));
+
+        // Thành công!
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> ĐÃ NHẬN THƯỞNG';
+        btn.style.background = "#4CAF50";
+        btn.style.boxShadow = "none";
+        btn.style.cursor = "default";
+        btn.style.animation = "none";
+
+        // Hiển thị thông báo
+        alert(`🎉 Thành công!\n\n` +
+            `Người nhận: ${displayName}\n` +
+            `Số tiền: ${rewardAmount} SUI\n` +
+            `Số dư mới: ${currentBalance} SUI\n\n` +
+            `TxHash: ${fakeTxHash.substring(0, 20)}...`);
+
+        console.log("✅ SUI Reward (FAKE):", { displayName, rewardAmount, currentBalance, fakeTxHash });
+    }
+
+    // Tạo transaction hash giả
+    #generateFakeTxHash() {
+        const chars = '0123456789abcdef';
+        let hash = '';
+        for (let i = 0; i < 64; i++) {
+            hash += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return hash;
     }
 }
