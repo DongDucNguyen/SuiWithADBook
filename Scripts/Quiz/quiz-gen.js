@@ -5,7 +5,7 @@
 
 // ============= CẤU HÌNH =============
 const CONFIG = {
-    API_KEY: "AIzaSyCPiATDnUZxPhPbq6_jwPK65sABL9H81Y0",
+    API_KEY: "AIzaSyBwst61vds7N090BMizF7j3TQggPpaG8XE",
     MODEL: "gemini-2.5-flash",
     API_URL: "https://generativelanguage.googleapis.com/v1beta/models"
 };
@@ -87,11 +87,19 @@ function parseResponse(rawText) {
  *       console.log(result.data); // Mảng câu hỏi
  *   }
  */
-async function generateQuiz(bookName, count = 10) {
+export async function generateQuiz(bookName, count = 10) {
     try {
         const prompt = createQuizPrompt(bookName, count);
         const rawText = await callGeminiAPI(prompt);
         const quizzes = parseResponse(rawText);
+
+        // Console.log đáp án để debug
+        console.log("=== QUIZ GENERATED ===");
+        quizzes.forEach((q, i) => {
+            console.log(`Câu ${i + 1}: ${q.ques}`);
+            console.log(`  Đáp án đúng: ${q.ans} - ${q[`option${q.ans}`]}`);
+        });
+        console.log("======================");
 
         return { success: true, data: quizzes, error: null };
     } catch (error) {

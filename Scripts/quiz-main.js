@@ -1,7 +1,7 @@
 /**
  * File: Scripts/quiz-main.js
  */
-import { generateQuiz } from './quiz-gen.js';     // Import logic AI
+import { generateQuiz } from './Quiz/quiz-gen.js';     // Import logic AI
 import { QuizApp } from './Quiz/quiz-app.js';     // Import giao diện Quiz
 
 // Hàm chuyển đổi định dạng dữ liệu từ AI sang QuizApp
@@ -16,15 +16,14 @@ function mapAIDataToQuizApp(aiDataArray) {
             item.option4
         ],
         // AI trả về 1-4, QuizApp cần index 0-3
-        correctIndex: item.ans - 1 
+        correctIndex: item.ans - 1
     }));
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. LẤY TÊN SÁCH TỪ LOCALSTORAGE (Biến mới theo yêu cầu)
-    localStorage.setItem('bookForQuiz', 'Nhà Giả kim')
-    const storedBookName = localStorage.getItem('bookForQuiz'); 
-    
+    // 1. LẤY TÊN SÁCH TỪ LOCALSTORAGE (Được truyền từ Book Details page)
+    const storedBookName = localStorage.getItem('bookForQuiz');
+
     const quizContainer = document.querySelector('.js-quiz-card');
     const loadingText = document.getElementById('loadingText'); // (Tùy chọn nếu bạn muốn hiện loading)
 
@@ -57,11 +56,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (result.success && result.data) {
             // 4. MAP DỮ LIỆU VÀ KHỞI TẠO QUIZ APP
             const formattedData = mapAIDataToQuizApp(result.data);
-            
+
             // Xóa loading và khởi tạo App
-            quizContainer.innerHTML = ''; 
+            quizContainer.innerHTML = '';
             new QuizApp(formattedData);
-            
+
         } else {
             throw new Error(result.error || "Không thể tạo câu hỏi.");
         }

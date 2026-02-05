@@ -4,11 +4,11 @@ export class BookBanner {
     #data;
     #container;
     #elements;
-    #isFavorite; 
+    #isFavorite;
 
     constructor(data) {
         this.#data = data;
-        this.#isFavorite = data.isFavorite || false; 
+        this.#isFavorite = data.isFavorite || false;
         this.#container = document.querySelector('.introduction-banner');
 
         if (this.#container) {
@@ -19,7 +19,8 @@ export class BookBanner {
                 date: this.#container.querySelector('.publish-date'),
                 shortInfo: this.#container.querySelector('.book-infor-content'),
                 playBtn: this.#container.querySelector('.function-buttons button:nth-child(1)'),
-                favBtn: this.#container.querySelector('.function-buttons button:nth-child(2)')
+                favBtn: this.#container.querySelector('.function-buttons button:nth-child(2)'),
+                quizBtn: this.#container.querySelector('.function-buttons .quiz-btn')
             };
             this.init();
         }
@@ -27,7 +28,7 @@ export class BookBanner {
 
     init() {
         this.#render();
-        this.#updateFavoriteUI(); 
+        this.#updateFavoriteUI();
         this.#addEventListeners();
     }
 
@@ -44,12 +45,12 @@ export class BookBanner {
         const btn = this.#elements.favBtn;
         if (!btn) return;
         if (this.#isFavorite) {
-            btn.classList.add('active'); 
-            btn.style.backgroundColor = 'pink'; 
+            btn.classList.add('active');
+            btn.style.backgroundColor = 'pink';
             btn.innerText = "Đã thích";
         } else {
             btn.classList.remove('active');
-            btn.style.backgroundColor = ''; 
+            btn.style.backgroundColor = '';
             btn.innerText = "Yêu thích";
         }
     }
@@ -61,12 +62,12 @@ export class BookBanner {
                 this.#updateFavoriteUI();
             });
         }
-        
+
         // --- CẬP NHẬT SỰ KIỆN NÚT PLAY ---
         if (this.#elements.playBtn) {
             this.#elements.playBtn.addEventListener('click', () => {
                 // Lấy ID sách từ dữ liệu đã truyền vào class
-                const bookId = this.#data.id; 
+                const bookId = this.#data.id;
                 console.log("Đang mở sách ID:", bookId);
 
                 // Cách 1: Truyền qua URL (Khuyên dùng)
@@ -75,6 +76,20 @@ export class BookBanner {
                 // Cách 2: Lưu vào localStorage (Nếu muốn giữ trạng thái lâu dài)
                 // localStorage.setItem('currentBookId', bookId);
                 // window.location.href = "../Reading-Page.html";
+            });
+        }
+
+        // --- SỰ KIỆN NÚT QUIZ ---
+        if (this.#elements.quizBtn) {
+            this.#elements.quizBtn.addEventListener('click', () => {
+                const bookTitle = this.#data.title;
+                console.log("Đang mở Quiz cho sách:", bookTitle);
+
+                // Lưu tên sách vào localStorage để quiz-main.js sử dụng
+                localStorage.setItem('bookForQuiz', bookTitle);
+
+                // Chuyển sang trang Quiz
+                window.location.href = '../Quiz.html';
             });
         }
     }
