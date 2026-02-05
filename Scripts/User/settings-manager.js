@@ -1,14 +1,17 @@
 import { ConfirmationModal } from './confirmation.js';
 import { ChangePasswordModal } from './password-modal.js';
+import { SuiAccountModal } from './sui-modal.js';
 
 export class SettingsManager {
     #confirmModal;
     #passwordModal;
+    #suiModal;
 
     constructor() {
         // Khởi tạo sẵn 2 loại modal
         this.#confirmModal = new ConfirmationModal();
         this.#passwordModal = new ChangePasswordModal();
+        this.#suiModal = new SuiAccountModal();
         
         this.init();
     }
@@ -48,6 +51,10 @@ export class SettingsManager {
                         // Logic xóa UI hoặc reload trang ở đây
                     }
                 );
+                break;
+            
+            case 'Tài khoản SUI':
+                this.#suiModal.show();
                 break;
 
             case 'Xóa tài khoản':

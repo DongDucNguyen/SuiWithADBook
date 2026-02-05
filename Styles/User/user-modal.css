@@ -167,3 +167,101 @@
     margin-bottom: 15px;
     font-style: italic;
 }
+
+/* --- Styles cho SUI Modal --- */
+
+/* Trạng thái chưa kết nối */
+.sui-connect-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.sui-logo-large {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.sui-desc {
+    font-family: 'Lato', sans-serif;
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.btn-sui-connect {
+    background-color: #3daef8; /* Màu xanh đặc trưng SUI */
+    color: white;
+    font-size: 18px;
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-sui-connect:hover {
+    background-color: #2b95d6;
+    transform: scale(1.05);
+}
+
+/* Trạng thái đã kết nối (Profile View) */
+.sui-profile-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sui-info-card {
+    background-color: #f5faff;
+    border: 1px solid #cce5ff;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sui-label {
+    font-size: 14px;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.sui-value {
+    font-family: 'Consolas', monospace; /* Font code để hiển thị địa chỉ đẹp hơn */
+    font-size: 16px;
+    color: #333;
+    word-break: break-all;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sui-balance-highlight {
+    font-size: 24px;
+    font-weight: 700;
+    color: #3daef8;
+}
+
+.btn-sui-disconnect {
+    background-color: #ffeff0;
+    color: #d63031;
+    border: 1px solid #fadbd8;
+    margin-top: 10px;
+}
+
+.btn-sui-disconnect:hover {
+    background-color: #fadbd8;
+}
