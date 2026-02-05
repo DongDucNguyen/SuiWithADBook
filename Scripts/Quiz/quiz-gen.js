@@ -5,7 +5,7 @@
 
 // ============= CẤU HÌNH =============
 const CONFIG = {
-    API_KEY: "AIzaSyBRWXDElp5Gkjsn38D_-CczTsB21lq5MZE",
+    API_KEY: "API_O_DAY",
     MODEL: "gemini-2.5-flash",
     API_URL: "https://generativelanguage.googleapis.com/v1beta/models"
 };

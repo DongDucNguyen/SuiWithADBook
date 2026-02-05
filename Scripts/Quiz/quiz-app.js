@@ -115,7 +115,7 @@ export class QuizApp {
             suiButtonHtml = `
                 <div style="margin-top: 30px;">
                     <button class="sui-reward-btn js-sui-btn">
-                        <i class="fa-solid fa-gift"></i> NHẬN 1 SUI
+                        <i class="fa-solid fa-gift"></i> NHẬN 0.001 SUI
                     </button>
                 </div>
             `;
@@ -148,71 +148,96 @@ export class QuizApp {
         }
     }
 
-    // Xử lý khi bấm nhận thưởng - FAKE HOÀN TOÀN (không cần backend)
+    // Xử lý khi bấm nhận thưởng - GỌI BACKEND ĐỂ THỰC HIỆN GIAO DỊCH THẬT
     async #handleSuiReward() {
         const btn = this.#quizContainer.querySelector('.js-sui-btn');
         if (!btn) return;
 
-        // Lấy thông tin từ localStorage
-        const userAddress = localStorage.getItem('sui_address');
-        const displayName = localStorage.getItem('sui_display_name') || 'Anonymous';
+        // Lấy thông tin từ localStorage (key từ sui-wallet.js)
+        const userAddress = localStorage.getItem('sui_wallet_address');
         const bookName = localStorage.getItem('bookForQuiz') || 'Unknown';
 
         if (!userAddress) {
-            alert("⚠️ Bạn chưa kết nối ví SUI!\nVui lòng vào Cài đặt → Tài khoản SUI để kết nối ví trước.");
+            alert("⚠️ Bạn chưa kết nối ví SUI!\n\nVui lòng vào trang Cá nhân → Tài khoản SUI để kết nối ví trước.");
+            return;
+        }
+
+        // Validate Sui address format
+        if (!userAddress.startsWith('0x') || userAddress.length !== 66) {
+            alert("⚠️ Địa chỉ ví không hợp lệ!\n\nVui lòng kết nối lại ví SUI.");
             return;
         }
 
         // Hiển thị trạng thái đang xử lý
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang gửi SUI...';
 
-        // Giả lập delay network (1-2 giây)
-        await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+        try {
+            // Gọi API Backend để thực hiện giao dịch thật
+            const response = await fetch('http://localhost:3001/api/reward', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userAddress: userAddress,
+                    bookName: bookName
+                })
+            });
 
-        // ========== FAKE TRANSACTION ==========
-        const rewardAmount = 1; // 1 SUI
-        const fakeTxHash = this.#generateFakeTxHash();
+            const result = await response.json();
 
-        // Lấy số dư hiện tại từ localStorage và cộng thêm
-        let currentBalance = parseFloat(localStorage.getItem('sui_balance') || '0');
-        currentBalance += rewardAmount;
-        localStorage.setItem('sui_balance', currentBalance.toString());
+            if (result.success) {
+                // Format địa chỉ ví để hiển thị
+                const shortAddress = `${userAddress.substring(0, 10)}...${userAddress.substring(userAddress.length - 8)}`;
 
-        // Lưu lịch sử transaction
-        const history = JSON.parse(localStorage.getItem('sui_tx_history') || '[]');
-        history.push({
-            txHash: fakeTxHash,
-            amount: rewardAmount,
-            bookName: bookName,
-            timestamp: new Date().toISOString()
-        });
-        localStorage.setItem('sui_tx_history', JSON.stringify(history));
+                // Lưu lịch sử transaction
+                const history = JSON.parse(localStorage.getItem('sui_tx_history') || '[]');
+                history.push({
+                    txHash: result.txHash,
+                    amount: result.amount,
+                    bookName: bookName,
+                    recipient: userAddress,
+                    timestamp: new Date().toISOString(),
+                    mode: result.mode
+                });
+                localStorage.setItem('sui_tx_history', JSON.stringify(history));
 
-        // Thành công!
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> ĐÃ NHẬN THƯỞNG';
-        btn.style.background = "#4CAF50";
-        btn.style.boxShadow = "none";
-        btn.style.cursor = "default";
-        btn.style.animation = "none";
+                // Thành công!
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> ĐÃ NHẬN THƯỞNG';
+                btn.style.background = "#4CAF50";
+                btn.style.boxShadow = "none";
+                btn.style.cursor = "default";
+                btn.style.animation = "none";
 
-        // Hiển thị thông báo
-        alert(`🎉 Thành công!\n\n` +
-            `Người nhận: ${displayName}\n` +
-            `Số tiền: ${rewardAmount} SUI\n` +
-            `Số dư mới: ${currentBalance} SUI\n\n` +
-            `TxHash: ${fakeTxHash.substring(0, 20)}...`);
+                // Hiển thị thông báo với thông tin thật
+                const modeText = result.mode === 'REAL' ? '🟢 Blockchain thật' : '🟡 Demo mode';
+                alert(`🎉 Thành công!\n\n` +
+                    `📚 Sách: ${bookName}\n` +
+                    `💰 Thưởng: ${result.amount} SUI\n` +
+                    `📬 Ví nhận: ${shortAddress}\n\n` +
+                    `🔗 TxHash: ${result.txHash.substring(0, 20)}...\n` +
+                    `${modeText}\n\n` +
+                    `Xem chi tiết: ${result.explorerUrl}`);
 
-        console.log("✅ SUI Reward (FAKE):", { displayName, rewardAmount, currentBalance, fakeTxHash });
-    }
+                console.log("✅ SUI Reward Success:", result);
+            } else {
+                throw new Error(result.error || 'Giao dịch thất bại');
+            }
 
-    // Tạo transaction hash giả
-    #generateFakeTxHash() {
-        const chars = '0123456789abcdef';
-        let hash = '';
-        for (let i = 0; i < 64; i++) {
-            hash += chars[Math.floor(Math.random() * chars.length)];
+        } catch (error) {
+            console.error("❌ SUI Reward Error:", error);
+
+            // Reset button
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-gift"></i> NHẬN 0.001 SUI';
+
+            // Thông báo lỗi
+            if (error.message.includes('Failed to fetch')) {
+                alert("❌ Không thể kết nối đến server!\n\nVui lòng đảm bảo backend đang chạy:\ncd backend && npm start");
+            } else {
+                alert(`❌ Lỗi: ${error.message}`);
+            }
         }
-        return hash;
     }
 }
