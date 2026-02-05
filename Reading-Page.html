@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading View - Listenary</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <link rel="stylesheet" href="./Styles/header.css">
+    <link rel="stylesheet" href="./Styles/Reading/reading-view.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Cấu hình Worker cho PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+
+    <script src="./Scripts/Reading/reading-detail.js" type="module" defer></script>
+    <script src="./Scripts/search-bar.js" type="module" defer></script>
+</head>
+<body style="padding-top:50px;">
+    <header class="site-header">
+        <a href="./Explore-Page.html" class="logo"><span>LISTEN</span>ARY</a>
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search">
+        </div>
+        <nav class="navigation">
+            <a href="./Explore-Page.html">KHÁM PHÁ</a>
+            <a href="./Author-Page.html">TÁC GIẢ</a>
+            <a href="./Genres-Page.html">THỂ LOẠI</a>
+            <a href="./User-Page.html" class="profile-icon">
+                <i class="fa-solid fa-user"></i>
+            </a>
+        </nav>            
+    </header>
+
+    <main class="reading-layout">
+        <section class="pdf-wrapper js-pdf-wrapper">
+            <div id="pdf-viewer-container">
+                </div>
+        </section>
+
+        <aside class="control-sidebar">
+            <div class="book-info-section">
+                <div class="book-cover-wrapper">
+                    <img src="./Images/Book-Covers/book.png" alt="Book Cover">
+                </div>
+                <div class="book-text">
+                    <h3 class="book-title">Người Thầy Vĩ Đại</h3>
+                    <p class="book-author">Robin Sharma</p>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <div class="player-section">
+                <div class="progress-bar-wrap">
+                    <span class="time-text curr-time">00:00</span>
+                    <input type="range" class="seek-slider" min="0" max="100" value="0">
+                    <span class="time-text total-time">00:00</span>
+                </div>
+
+                <div class="controls-row">
+                    <div class="vol-ctrl">
+                        <i class="fa-solid fa-volume-low"></i>
+                        <input type="range" class="vol-slider" min="0" max="100" value="50">
+                    </div>
+                    
+                    <button class="play-btn-large js-play-btn">
+                        <i class="fa-solid fa-play"></i>
+                    </button>
+
+                    <div class="speed-wrapper">
+                        <div class="speed-ctrl js-speed-btn">1.0x</div>
+                        <ul class="speed-dropdown js-speed-dropdown">
+                            <li data-speed="0.25">0.25x</li>
+                            <li data-speed="0.5">0.5x</li>
+                            <li data-speed="0.75">0.75x</li>
+                            <li data-speed="1.0" class="active">1.0x</li>
+                            <li data-speed="1.25">1.25x</li>
+                            <li data-speed="1.5">1.5x</li>
+                            <li data-speed="1.75">1.75x</li>
+                            <li data-speed="2.0">2.0x</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons-row">
+                <button class="action-pill js-fav-btn">Yêu thích</button>
+                <button class="action-pill js-autoscroll-btn">Tự động cuộn</button>
+                <button class="action-pill js-fullscreen-btn">Toàn màn hình</button>
+            </div>
+
+            <hr class="divider">
+
+            <div class="chapter-section">
+                <h4 class="section-title">Mục lục</h4>
+                <ul class="chapter-list js-chapter-list">
+                    </ul>
+            </div>
+            
+        </aside>
+    </main>
+
+    <audio id="main-audio" preload="metadata">
+        Trình duyệt của bạn không hỗ trợ phát âm thanh.
+    </audio>
+
+</body>
+</html>

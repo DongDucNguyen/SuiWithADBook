@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Stick+No+Bills:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+
+/* Phần Background Hero */
+.quiz-hero {
+    text-align: center;
+    padding: 20px 0;
+    margin-bottom: 20px;
+}
+
+.quiz-main-title {
+    font-family: 'Stick No Bills', sans-serif;
+    font-size: 100px;
+    font-weight: 800;
+    color: #676666;
+    letter-spacing: -2px;
+    margin: 0;
+    line-height: 1;
+}
+
+.quiz-subtitle {
+    font-family: 'Lato', sans-serif;
+    color: #555;
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+/* Phần Container chính chứa Quiz */
+.quiz-container-section {
+    background: linear-gradient(0deg, #ffffff, #d5cdc0); /* Giống Trending Section */
+    padding: 50px 0;
+    display: flex;
+    justify-content: center;
+    min-height: 500px;
+}
+
+/* Card Quiz (Style giống new-book-card) */
+.quiz-card {
+    background-color: rgba(255, 255, 255, 0.9);
+    width: 700px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Nội dung câu hỏi */
+.question-count {
+    font-family: 'Lato', sans-serif;
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.question-text {
+    font-family: "Afacad", sans-serif;
+    font-size: 35px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 30px;
+}
+
+/* Lưới đáp án */
+.answers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.answer-btn {
+    background: #fff;
+    border: 1px solid #aaa;
+    padding: 15px 20px;
+    border-radius: 5px; /* Bo góc vuông nhẹ giống nút Xem thêm */
+    font-family: 'Lato', sans-serif;
+    font-size: 1.1rem;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.answer-btn:hover {
+    background-color: #333;
+    color: #fff;
+    border-color: #333;
+    transform: scale(1.02); /* Style giống hover ảnh bìa */
+}
+
+.answer-btn:active {
+    transform: scale(0.98);
+}
+
+/* Trạng thái đúng/sai */
+.answer-btn.correct {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+.answer-btn.wrong {
+    background-color: #f44336;
+    color: white;
+    border-color: #f44336;
+}
+
+/* Nút điều hướng */
+.quiz-controls {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.next-btn {
+    background-color: #1a1a1a;
+    color: #fff;
+    border: none;
+    padding: 10px 30px;
+    font-family: 'Afacad', sans-serif;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 0;
+    transition: opacity 0.3s;
+}
+
+.next-btn:hover {
+    opacity: 0.8;
+}
+
+/* Màn hình kết quả */
+.result-score {
+    font-family: 'Stick No Bills', sans-serif;
+    font-size: 80px;
+    color: #333;
+}
+
+.result-message {
+    font-family: 'Afacad', sans-serif;
+    font-size: 25px;
+    margin-bottom: 30px;
+}
+/* Style cho nút Nhận SUI đặc biệt */
+.sui-reward-btn {
+    background: linear-gradient(45deg, #FFD700, #FFAA00); /* Màu vàng gold */
+    color: #fff;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-family: 'Afacad', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite; /* Hiệu ứng nhịp đập */
+    text-transform: uppercase;
+}
+
+.sui-reward-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+}
+
+.sui-reward-btn:active {
+    transform: scale(0.95);
+}
+
+.sui-reward-btn i {
+    margin-right: 10px;
+}
+
+/* Hiệu ứng nhấp nháy thu hút sự chú ý */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(255, 215, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+    }
+}

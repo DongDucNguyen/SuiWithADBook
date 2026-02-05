@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Khám phá</title>
+        <style>
+            body {
+                padding-top: 120;
+                margin: 0;
+            }    
+
+        </style>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./Styles/header.css">
+        <link rel="stylesheet" href="./Styles/Explore/explore-trending.css">
+        <link rel="stylesheet" href="./Styles/Explore/explore-banner.css">
+        <link rel="stylesheet" href="./Styles/Explore/explore-new-books.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <script src="./Scripts/explore.js" type="module" defer></script>
+        <script src="./Scripts/Book-Detail/pointer-to-book.js" type="module" defer></script>
+        <script src="./Scripts/search-bar.js" type="module" defer></script>
+    </head>
+    <body>
+        <header class="site-header">
+            <a href="./Explore-Page.html" class="logo"><span>LISTEN</span>ARY</a>
+
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search">
+            </div>
+
+            <nav class="navigation">
+                <a href="./Explore-Page.html">KHÁM PHÁ</a>
+                <a href="./Author-Page.html">TÁC GIẢ</a>
+                <a href="./Genres-Page.html">THỂ LOẠI</a>
+                <a href="./User-Page.html" class="profile-icon">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+            </nav>            
+        </header>
+        
+        <main>
+            <section class="hero-section">
+                <button class="arrow">
+                    <img src="./Images/elements/left-arrow.png">
+                </button>
+                
+                <div class="hero-content js-hero-content">
+                </div>
+
+                <div class="hero-image js-hero-image">
+                </div>
+
+                <button class="arrow">
+                    <img src="./Images/elements/right-arrow.png">
+                </button>
+            </section>
+
+            <section class="trending-section">
+                
+                <div class="book-grid js-book-grid-1">
+                </div>
+                <a href="./Details/Listing-Book-Page.html" class="Top-Trending" >TOP TRENDING</a>
+                <div class="book-grid js-book-grid-2">
+                </div>
+            </section>
+
+             <section class="new-books-section">
+                <a href="./Details/Listing-Book-Page.html" class="background-text"><div>SÁCH MỚI</div></a>
+                <div class="new-books-layout">
+                    <div class="new-book-card">
+                    </div>
+                    <div class="new-books-grid">
+                    </div>
+                </div>
+             </section>
+        </main>
+    </body>
+</html>
